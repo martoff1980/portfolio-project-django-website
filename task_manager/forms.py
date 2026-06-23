@@ -2,10 +2,17 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
-from task_manager.models import Task, Position
+from task_manager.models import Task, Tag, Position
 
 
 class TaskForm(forms.ModelForm):
+    # tags field to allow multiple selection of tags using checkboxes
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Теги завдання"
+    )
     class Meta:
         model = Task
         fields = ["name", "description", "deadline", "priority", "assignees", "tags"]
