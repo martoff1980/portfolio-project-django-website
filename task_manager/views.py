@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
-
+from django.contrib.auth import get_user_model
+        
 from task_manager.models import Task
 
 
@@ -41,3 +42,18 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Task
     success_url = reverse_lazy("task_manager:task-list")
     template_name = "task_manager/task_confirm_delete.html"
+    
+
+class IndexView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "task_manager/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # We collect basic analytics for display on the main page
+        # Number of tasks and number of active tasks
+        context["num_tasks"] = Task.objects.count()
+        context["num_active_tasks"] = Task.objects.filter(is_completed=False).count()
+        # We extract the number of employees from the custom Worker
+        Worker = get_user_model()
+        context["num_workers"] = Worker.objects.count()
+        return context
