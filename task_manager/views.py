@@ -4,7 +4,7 @@ from django.views import generic
 from django.contrib.auth import get_user_model
         
 from task_manager.models import Task
-
+from task_manager.forms import TaskForm, WorkerCreationForm
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
@@ -28,13 +28,13 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     model = Task
-    fields = "__all__"
+    form_class = TaskForm
     success_url = reverse_lazy("task_manager:task-list")
 
 
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Task
-    fields = "__all__"
+    form_class = TaskForm
     success_url = reverse_lazy("task_manager:task-list")
 
 
@@ -57,3 +57,9 @@ class IndexView(LoginRequiredMixin, generic.TemplateView):
         Worker = get_user_model()
         context["num_workers"] = Worker.objects.count()
         return context
+
+class WorkerCreateView(generic.CreateView):
+    # Presentation for registration of new employees on the website
+    form_class = WorkerCreationForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("login")
