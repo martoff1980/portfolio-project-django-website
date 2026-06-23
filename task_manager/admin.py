@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from task_manager.models import Position, Worker, Tag, Task
-
+from task_manager.models import Position, Worker, Tag, Task, Team, Project
 
 @admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
@@ -39,10 +38,10 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     # Fields that will be visible in the list of all tasks
-    list_display = ["name", "deadline", "priority", "is_completed"]
+    list_display = ["name", "deadline", "priority", "is_completed", "project"]
     
     # Filter by completion status, priority, deadline, and tags
-    list_filter = ["is_completed", "priority", "deadline", "tags"]
+    list_filter = ["is_completed", "priority", "deadline", "tags", "project"]
     
     # Search by task name and description
     search_fields = ["name", "description"]
@@ -50,3 +49,16 @@ class TaskAdmin(admin.ModelAdmin):
     # This allows for a better user experience
     # when selecting multiple assignees or tags for a task.
     filter_horizontal = ["assignees", "tags"]
+    
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    search_fields = ["name"]
+    filter_horizontal = ["members"]
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ["name", "team"]
+    list_filter = ["team"]
+    search_fields = ["name", "description"]
