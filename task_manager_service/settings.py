@@ -30,6 +30,10 @@ ALLOWED_HOSTS = []
 # Our Worker for authentication
 AUTH_USER_MODEL = 'task_manager.Worker'
 
+# Crispy Forms (Bootstrap 5)
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 # Application definition
 
 INSTALLED_APPS = [
