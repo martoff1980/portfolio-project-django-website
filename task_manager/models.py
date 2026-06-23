@@ -33,6 +33,17 @@ class Tag(models.Model):
     def __str__(self) -> str:
         return self.name
 
+class Team(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    #Members of the team (Many-to-Many with Worker)
+    members = models.ManyToManyField(Worker, related_name="teams")
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name
+
 class Project(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
@@ -90,13 +101,3 @@ class Task(models.Model):
     def __str__(self) -> str:
         return f"{self.name} (Completed: {self.is_completed})"
     
-class Team(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    #Members of the team (Many-to-Many with Worker)
-    members = models.ManyToManyField(Worker, related_name="teams")
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self) -> str:
-        return self.name
