@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Панель управління - IT Task Manager{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold">Менеджер завдань IT-компанії</h1>
+        <p class="col-md-8 fs-4 text-muted">Ласкаво просимо! Керуйте завданнями, призначайте виконавців та контролюйте дедлайни вашої команди розробників, дизайнерів та QA.</p>
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col-md-4 mb-3">
+        <div class="card border-0 shadow-sm bg-primary text-white h-100">
+            <div class="card-body py-4">
+                <h3 class="card-title h1">{{ num_workers }}</h3>
+                <p class="card-text fs-5">Працівників у команді</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-0 shadow-sm bg-warning text-dark h-100">
+            <div class="card-body py-4">
+                <h3 class="card-title h1">{{ num_active_tasks }}</h3>
+                <p class="card-text fs-5">Активних завдань</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-0 shadow-sm bg-success text-white h-100">
+            <div class="card-body py-4">
+                <h3 class="card-title h1">{{ num_tasks }}</h3>
+                <p class="card-text fs-5">Всього завдань створено</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
