@@ -63,3 +63,27 @@ class WorkerCreateView(generic.CreateView):
     form_class = WorkerCreationForm
     template_name = "registration/register.html"
     success_url = reverse_lazy("login")
+    
+class MyTaskListView(LoginRequiredMixin, generic.ListView):
+    # Page "My cabinet" with worker's personal tasks 
+    model = Task
+    template_name = "task_manager/my_task_list.html"
+    context_object_name = "my_tasks"
+
+    def get_queryset(self):
+        # Only select tasks where the current user is in the list of assignees
+        return (
+            Task.objects.filter(assignees=self.request.user)
+            .prefetch_related("tags")
+            .order_by("is_completed", "deadline")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        
+        # We separate tasks into two categories 
+        # for convenient display in different tables
+        context["active_tasks"] = queryset.filter(is_completed=False)
+        context["completed_tasks"] = queryset.filter(is_completed=True)
+        return context
