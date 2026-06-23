@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Our Worker for authentication
+AUTH_USER_MODEL = 'task_manager.Worker'
 
 # Application definition
 
@@ -37,6 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third-party apps
+    'crispy_forms',
+    'crispy_bootstrap5',
+    # Local apps
+    'task_manager.apps.TaskManagerConfig',
 ]
 
 MIDDLEWARE = [
