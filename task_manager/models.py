@@ -15,27 +15,32 @@ class Position(models.Model):
 
 class Worker(AbstractUser):
     position = models.ForeignKey(
-        Position, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        Position,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name="workers"
     )
 
     def __str__(self) -> str:
-        return f"{self.username} ({self.position if self.position else 'No position'})"
+        return (
+            f"{self.username} "
+            f"({self.position if self.position else 'No position'})"
+        )
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
     class Meta:
         ordering = ["name"]
 
     def __str__(self) -> str:
         return self.name
 
+
 class Team(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    #Members of the team (Many-to-Many with Worker)
+    # Members of the team (Many-to-Many with Worker)
     members = models.ManyToManyField(Worker, related_name="teams")
 
     class Meta:
@@ -44,15 +49,16 @@ class Team(models.Model):
     def __str__(self) -> str:
         return self.name
 
+
 class Project(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
     # За каждым проектом закреплена одна команда (или наоборот)
     team = models.ForeignKey(
-        Team, 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, 
+        Team,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="projects"
     )
 
@@ -61,6 +67,7 @@ class Project(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
 
 class Task(models.Model):
     PRIORITY_CHOICES = [
@@ -75,29 +82,28 @@ class Task(models.Model):
     deadline = models.DateTimeField()
     is_completed = models.BooleanField(default=False)
     priority = models.CharField(
-        max_length=10, 
-        choices=PRIORITY_CHOICES, 
+        max_length=10,
+        choices=PRIORITY_CHOICES,
         default="medium"
     )
-    
+
     project = models.ForeignKey(
-        Project, 
-        on_delete=models.CASCADE, 
+        Project,
+        on_delete=models.CASCADE,
         related_name="tasks",
-        # null=True,temporary, 
+        # null=True,temporary,
         # to avoid errors with old tasks in the database
-        null=True,  
+        null=True,
         blank=False
     )
-    
+
     # Connection for workers who execising task
     assignees = models.ManyToManyField(Worker, related_name="tasks")
     # Connection for tags (option)
     tags = models.ManyToManyField(Tag, related_name="tasks", blank=True)
-    
+
     class Meta:
         ordering = ["deadline"]
-        
+
     def __str__(self) -> str:
         return f"{self.name} (Completed: {self.is_completed})"
-    
