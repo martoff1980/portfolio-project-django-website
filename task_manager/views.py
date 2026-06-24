@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import get_user_model
         
-from task_manager.models import Task
+from task_manager.models import Project,Task
 from task_manager.forms import TaskForm, WorkerCreationForm
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
@@ -14,7 +14,10 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         #  We can implement filtering or searching by task name
-        queryset = Task.objects.select_related().prefetch_related("assignees", "tags")
+        # queryset = Task.objects.select_related().prefetch_related("assignees", "tags")
+        queryset = Task.objects.filter(
+            project__team__members=self.request.user
+        ).select_related("project").prefetch_related("assignees", "tags")
         query = self.request.GET.get("name")
         if query:
             return queryset.filter(name__icontains=query)
@@ -86,4 +89,30 @@ class MyTaskListView(LoginRequiredMixin, generic.ListView):
         # for convenient display in different tables
         context["active_tasks"] = queryset.filter(is_completed=False)
         context["completed_tasks"] = queryset.filter(is_completed=True)
+        return context
+
+class ProjectListView(LoginRequiredMixin, generic.ListView):
+    # Current user get projects
+    model = Project
+    template_name = "task_manager/project_list.html"
+    context_object_name = "project_list"
+
+    def get_queryset(self):
+        # We show only those projects in the teams of which the current user is a member
+        return Project.objects.filter(team__members=self.request.user).select_related("team")
+
+
+class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
+    # A detailed project page with a list of its tasks
+    model = Project
+    template_name = "task_manager/project_detail.html"
+
+    def get_queryset(self):
+        # Protect: you can only access the project page if you are a member of its team
+        return Project.objects.filter(team__members=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # We pass to the template all tasks of this project
+        context["project_tasks"] = self.object.tasks.prefetch_related("assignees", "tags")
         return context
