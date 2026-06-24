@@ -5,9 +5,8 @@ from django.db import models
 class Position(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.id = None
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self) -> str:
         return self.name
