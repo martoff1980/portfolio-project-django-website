@@ -10,7 +10,8 @@ from task_manager.views import (
     WorkerCreateView,
     MyTaskListView,
     ProjectListView,
-    ProjectDetailView
+    ProjectDetailView,
+    ToggleTaskStatusView
 )
 
 app_name = "task_manager"
@@ -41,4 +42,9 @@ urlpatterns = [
         ProjectDetailView.as_view(),
         name="project-detail"
         ),
+    path(
+        "tasks/<int:pk>/toggle-status/",
+        ToggleTaskStatusView.as_view(),
+        name="toggle-task-status"
+    ),
 ]
