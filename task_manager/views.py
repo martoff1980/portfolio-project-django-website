@@ -135,6 +135,7 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
         )
         return context
 
+
 class ToggleTaskStatusView(LoginRequiredMixin, generic.View):
     # Controller for toggling the completion status of a task
     def post(self, request, pk):
@@ -142,11 +143,11 @@ class ToggleTaskStatusView(LoginRequiredMixin, generic.View):
         task = get_object_or_404(Task, pk=pk)
         task.is_completed = not task.is_completed
         task.save()
-        
+
         # Redirect to the previous page or to the task detail page
         # if the previous page is not available
         next_url = request.META.get("HTTP_REFERER", "task_manager:task-detail")
         if "delete" in next_url:
             return redirect("task_manager:task-detail", pk=pk)
-        
+
         return redirect(next_url)
