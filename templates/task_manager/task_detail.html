@@ -18,6 +18,15 @@
                         {% else %}
                             <span class="badge bg-warning text-dark fs-6">⏳ В роботі</span>
                         {% endif %}
+
+                        <form action="{% url 'task_manager:toggle-task-status' task.id %}" method="post" class="mt-2">
+                            {% csrf_token %}
+                            {% if task.is_completed %}
+                                <button type="submit" class="btn btn-outline-warning btn-sm">↩ Повернути в роботу</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-success btn-sm">⚡ Позначити як Готово</button>
+                            {% endif %}
+    </form>
                     </div>
                 </div>
 
