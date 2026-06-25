@@ -22,6 +22,7 @@
                     <th>Дедлайн</th>
                     <th>Пріоритет</th>
                     <th>Теги</th>
+                    <th>Дія</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,6 +39,12 @@
                         {% empty %}
                             <span class="text-muted small">-</span>
                         {% endfor %}
+                    </td>
+                    <td>
+                        <form action="{% url 'task_manager:toggle-task-status' task.id %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm py-1 px-2">✓ Готово</button>
+                        </form>
                     </td>
                 </tr>
                 {% empty %}
