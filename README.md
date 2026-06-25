@@ -7,7 +7,7 @@ task to other team members, and mark it as completed (of course, preferably befo
 
 ## Database structure:
 
-![alt text](images/image.png)
+![alt text](images/structure_db.png)
 
 Project features:
 
