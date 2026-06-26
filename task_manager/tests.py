@@ -7,7 +7,8 @@ from task_manager.models import Position, Project, Task, Team
 
 
 class ModelTests(TestCase):
-    # Testing the correctness of model creation and their string representation.
+    # Testing the correctness of model creation and
+    # their string representation.
     def test_position_str(self) -> None:
         position = Position.objects.create(name="Python Developer")
         self.assertEqual(str(position), "Python Developer")
@@ -37,9 +38,12 @@ class ViewTests(TestCase):
         )
         self.team = Team.objects.create(name="Alpha Team")
         self.team.members.add(self.worker)
-        
-        self.project = Project.objects.create(name="E-Commerce", team=self.team)
-        
+
+        self.project = Project.objects.create(
+            name="E-Commerce",
+            team=self.team
+        )
+
         self.task = Task.objects.create(
             name="Write Documentation",
             description="Fix README and draw diagrams",
@@ -72,8 +76,11 @@ class ViewTests(TestCase):
         # project,
         # task that our user has no relation to
         other_team = Team.objects.create(name="Beta Team")
-        other_project = Project.objects.create(name="Mobile App", team=other_team)
-        other_task = Task.objects.create(
+        other_project = Project.objects.create(
+            name="Mobile App",
+            team=other_team
+        )
+        Task.objects.create(
             name="Secret QA Task",
             description="For Beta Team only",
             deadline=timezone.now() + timezone.timedelta(days=1),
@@ -82,7 +89,7 @@ class ViewTests(TestCase):
 
         self.client.login(username="manager_jack", password="securepassword")
         response = self.client.get(reverse("task_manager:task-list"))
-        
+
         self.assertEqual(response.status_code, 200)
         # Our task should be in the list
         self.assertContains(response, "Write Documentation")
@@ -93,35 +100,39 @@ class ViewTests(TestCase):
         # Testing the toggle functionality of a task's status
         # from "In Progress" to "Completed" and back.
         self.client.login(username="manager_jack", password="securepassword")
-        
+
         # Default status should be False (In Progress)
         self.assertFalse(self.task.is_completed)
-        
+
         # Send a POST request to toggle the task status
-        detail_url = reverse("task_manager:task-detail", kwargs={"pk": self.task.id})
-        toggle_url = reverse("task_manager:toggle-task-status", kwargs={"pk": self.task.id})
+        detail_url = reverse(
+            "task_manager:task-detail",
+            kwargs={"pk": self.task.id}
+        )
+        toggle_url = reverse(
+            "task_manager:toggle-task-status",
+            kwargs={"pk": self.task.id}
+        )
         # Send a POST request to toggle the task status,
         # explicitly passing the HTTP_REFERER header
         response = self.client.post(toggle_url, HTTP_REFERER=detail_url)
-        
+
         # Check that the response is a redirect to the task detail page
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, detail_url)
-        
-        
+
         # Check that the response is a redirect after toggling the status
         self.assertEqual(response.status_code, 302)
-        
+
         # Refresh the task object from the database to get the updated status
         self.task.refresh_from_db()
-        
+
         # Now the status should be True (Completed)
         self.assertTrue(self.task.is_completed)
 
         # Send another POST request to toggle the status back (False)
         response = self.client.post(toggle_url, HTTP_REFERER=detail_url)
         self.assertRedirects(response, detail_url)
-        
+
         self.task.refresh_from_db()
         self.assertFalse(self.task.is_completed)
-
