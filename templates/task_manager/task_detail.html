@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Завдання: {{ task.name }}{% endblock %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <span class="badge bg-primary mb-2">📁 Проєкт: {{ task.project.name|default:"Без проєкту" }}</span>
+              <h2 class="card-title text-dark mb-1">{{ task.name }}</h2>
+            </div>
+            <div>
+              {% if task.is_completed %}
+                <span class="badge bg-success fs-6">✓ Виконано</span>
+              {% else %}
+                <span class="badge bg-warning text-dark fs-6">⏳ В роботі</span>
+              {% endif %}
+              <form action="{% url 'task_manager:toggle-task-status' task.id %}"
+                    method="post"
+                    class="mt-2">
+                {% csrf_token %}
+                {% if task.is_completed %}
+                  <button type="submit" class="btn btn-outline-warning btn-sm">↩ Повернути в роботу</button>
+                {% else %}
+                  <button type="submit" class="btn btn-success btn-sm">⚡ Позначити як Готово</button>
+                {% endif %}
+              </form>
+            </div>
+          </div>
+          <hr>
+          <h5 class="text-secondary">Опис завдання:</h5>
+          <p class="fs-5 text-dark bg-light p-3 rounded"
+             style="white-space: pre-line">{{ task.description }}</p>
+          <div class="row my-4">
+            <div class="col-sm-6 mb-3">
+              <div class="p-3 bg-light rounded border-start border-danger border-3">
+                <small class="text-muted d-block text-uppercase fw-bold">⏰ Дедлайн</small>
+                <span class="fs-6 fw-bold text-danger">{{ task.deadline|date:"d.m.Y H:i" }}</span>
+              </div>
+            </div>
+            <div class="col-sm-6 mb-3">
+              <div class="p-3 bg-light rounded border-start border-info border-3">
+                <small class="text-muted d-block text-uppercase fw-bold">🔥 Пріоритет</small>
+                <span class="fs-6 fw-bold text-uppercase text-info">{{ task.priority }}</span>
+              </div>
+            </div>
+          </div>
+          <h5 class="text-secondary mb-3">👥 Виконавці команди:</h5>
+          <div class="list-group mb-4">
+            {% for worker in task.assignees.all %}
+              <div class="list-group-item list-group-item-action border-0 bg-light mb-2 rounded d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>{{ worker.first_name }} {{ worker.last_name }}</strong>
+                  <span class="text-muted small">(@{{ worker.username }})</span>
+                </div>
+                <span class="badge bg-secondary">{{ worker.position.name|default:"Посада не вказана" }}</span>
+              </div>
+            {% empty %}
+              <p class="text-muted italic bg-light p-3 rounded">Виконавців поки не призначено.</p>
+            {% endfor %}
+          </div>
+          <h5 class="text-secondary mb-2">🏷 Теги:</h5>
+          <div class="mb-4">
+            {% for tag in task.tags.all %}
+              <span class="badge bg-dark text-white p-2 me-1">{{ tag.name }}</span>
+            {% empty %}
+              <span class="text-muted small">Теги відсутні.</span>
+            {% endfor %}
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'task_manager:task-list' %}"
+               class="btn btn-outline-secondary">← До списку</a>
+            <div>
+              <a href="{% url 'task_manager:task-update' task.id %}"
+                 class="btn btn-warning me-2">✏️ Редагувати</a>
+              <a href="{% url 'task_manager:task-delete' task.id %}"
+                 class="btn btn-danger">🗑 Видалити</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -13,11 +13,20 @@ class TaskForm(forms.ModelForm):
         required=False,
         label="Теги завдання"
     )
+
     class Meta:
         model = Task
-        fields = ["name", "description", "deadline", "priority", "assignees", "tags", "project"]
+        fields = [
+            "name",
+            "description",
+            "deadline",
+            "priority",
+            "assignees",
+            "tags",
+            "project"]
         widgets = {
-            # Widget for the deadline field to use a datetime-local input type
+            # Widget for the deadline field to use
+            # a datetime-local input type
             "deadline": forms.DateTimeInput(
                 attrs={
                     "type": "datetime-local",

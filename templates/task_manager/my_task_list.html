@@ -1,86 +1,93 @@
 {% extends 'base.html' %}
-
 {% block title %}Мій кабінет - IT Task Manager{% endblock %}
-
 {% block content %}
-<div class="row mb-4">
+  <div class="row mb-4">
     <div class="col">
-        <h2>Personal Workspace: {{ user.first_name }} {{ user.last_name }}</h2>
-        <p class="text-muted">Тут відображаються лише ті завдання, які закріплені за вами.</p>
+      <h2>Personal Workspace: {{ user.first_name }} {{ user.last_name }}</h2>
+      <p class="text-muted">Тут відображаються лише ті завдання, які закріплені за вами.</p>
     </div>
-</div>
-
-<div class="card border-0 shadow-sm mb-4">
+  </div>
+  <div class="card border-0 shadow-sm mb-4">
     <div class="card-header bg-warning text-dark fw-bold py-3">
-        ⏳ Завдання в роботі ({{ active_tasks.count }})
+      ⏳ Завдання в роботі ({{ active_tasks.count }})
     </div>
     <div class="table-responsive bg-white rounded-bottom">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th>Назва</th>
-                    <th>Дедлайн</th>
-                    <th>Пріоритет</th>
-                    <th>Теги</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in active_tasks %}
-                <tr>
-                    <td><strong><a href="{% url 'task_manager:task-detail' task.id %}" class="text-decoration-none text-dark">{{ task.name }}</a></strong></td>
-                    <td class="text-danger fw-bold">{{ task.deadline|date:"d.m.Y H:i" }}</td>
-                    <td>
-                        <span class="badge bg-secondary text-uppercase">{{ task.priority }}</span>
-                    </td>
-                    <td>
-                        {% for tag in task.tags.all %}
-                            <span class="badge bg-light text-dark border">{{ tag.name }}</span>
-                        {% empty %}
-                            <span class="text-muted small">-</span>
-                        {% endfor %}
-                    </td>
-                </tr>
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Назва</th>
+            <th>Дедлайн</th>
+            <th>Пріоритет</th>
+            <th>Теги</th>
+            <th>Дія</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in active_tasks %}
+            <tr>
+              <td><strong><a href="{% url 'task_manager:task-detail' task.id %}"
+   class="text-decoration-none text-dark">{{ task.name }}</a></strong></td>
+              <td class="text-danger fw-bold">{{ task.deadline|date:"d.m.Y H:i" }}</td>
+              <td>
+                <span class="badge bg-secondary text-uppercase">{{ task.priority }}</span>
+              </td>
+              <td>
+                {% for tag in task.tags.all %}
+                  <span class="badge bg-light text-dark border">{{ tag.name }}</span>
                 {% empty %}
-                <tr>
-                    <td colspan="4" class="text-center py-4 text-muted">У вас немає активних завдань. Чудова робота! 🎉</td>
-                </tr>
+                  <span class="text-muted small">-</span>
                 {% endfor %}
-            </tbody>
-        </table>
+              </td>
+              <td>
+                <form action="{% url 'task_manager:toggle-task-status' task.id %}"
+                      method="post"
+                      class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success btn-sm py-1 px-2">✓ Готово</button>
+                </form>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" class="text-center py-4 text-muted">У вас немає активних завдань. Чудова робота! 🎉</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-</div>
-
-<div class="card border-0 shadow-sm">
+  </div>
+  <div class="card border-0 shadow-sm">
     <div class="card-header bg-success text-white fw-bold py-3">
-        ✓ Виконані завдання ({{ completed_tasks.count }})
+      ✓ Виконані завдання ({{ completed_tasks.count }})
     </div>
     <div class="table-responsive bg-white rounded-bottom">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th>Назва</th>
-                    <th>Дедлайн було встановлено на</th>
-                    <th>Теги</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for task in completed_tasks %}
-                <tr>
-                    <td class="text-muted text-decoration-line-through"><a href="{% url 'task_manager:task-detail' task.id %}" class="text-decoration-none text-muted">{{ task.name }}</a></td>
-                    <td class="text-muted">{{ task.deadline|date:"d.m.Y H:i" }}</td>
-                    <td>
-                        {% for tag in task.tags.all %}
-                            <span class="badge bg-light text-muted border">{{ tag.name }}</span>
-                        {% endfor %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="3" class="text-center py-4 text-muted">Ви ще не завершили жодного завдання.</td>
-                </tr>
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Назва</th>
+            <th>Дедлайн було встановлено на</th>
+            <th>Теги</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in completed_tasks %}
+            <tr>
+              <td class="text-muted text-decoration-line-through"><a href="{% url 'task_manager:task-detail' task.id %}"
+   class="text-decoration-none text-muted">{{ task.name }}</a></td>
+              <td class="text-muted">{{ task.deadline|date:"d.m.Y H:i" }}</td>
+              <td>
+                {% for tag in task.tags.all %}
+                  <span class="badge bg-light text-muted border">{{ tag.name }}</span>
                 {% endfor %}
-            </tbody>
-        </table>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3" class="text-center py-4 text-muted">Ви ще не завершили жодного завдання.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-</div>
+  </div>
 {% endblock %}

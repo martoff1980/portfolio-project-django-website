@@ -1,56 +1,66 @@
-# Менеджер завдань IT-компанії
+# IT company task manager
 
-У тебе є команда розробників, дизайнерів, project-менеджерів та QA-спеціалістів. Також у тебе є безліч завдань, пов’язаних з IT-сферою. Але чомусь ти досі не чув(-ла) нічого про Trello або ClickUp.
-Тож ти вирішив(-ла) реалізувати власний менеджер завдань, який розв'язуватиме можливі проблеми під час розробки продукту твоєю командою. Кожен член команди може створювати завдання, призначати це
-завдання іншим членам команди та позначати його як виконане (звісно, краще до дедлайну).
+You have a team of developers, designers, project managers, and QA specialists. You also have a lot of IT-related tasks. But the team doesn't work with Trello or ClickUp for economic reasons.
 
-## Структура бази даних:
+Therefore, the team decided to implement its own task manager, which will solve possible problems during the development of the product by your team. Each team member can create tasks, assign this
+task to other team members, and mark it as completed (of course, preferably before the deadline).
 
-![alt text](images/image.png)
+## Database structure:
 
-Додаткові ідеї (опціонально):
+![alt text](images/structure_db.png)
 
-- Для кожного працівника окремо відображаються виконані та невиконані завдання. Додати теги (наприклад, landing-page-layout або python-refactoring) для завдань зі зв'язком Many-to-Many.
+Project features:
 
-- Суперскладна ідея (опціонально): додати підтримку Projects та Teams. Різні команди можуть працювати над різними проєктами, і також всередині кожного проєкту є багато завдань.
+- Completed and uncompleted tasks are displayed separately for each employee. Add tags for tasks with a Many-to-Many relationship.
 
-Стуктура проекту.
+- Support for Projects and Teams. Different teams can work on different projects, and there are also many tasks inside each project.
+
+Project structure:
 
 ```text
 it_task_manager/
 │
-├── .gitignore               # Ігнорування файлів (venv, db.sqlite3, .env тощо)
-├── README.md                # Опис проєкту (який ви надали)
-├── requirements.txt         # Залежності проєкту (django, pillow, python-dotenv тощо)
-├── db.sqlite3               # Локальна база даних (створиться автоматично)
-├── manage.py                # Головний скрипт керування Django
+├── .gitignore                   # Ігнорування файлів (venv, db.sqlite3, .env тощо)
+├── README.md                    # Опис проєкту (який ви надали)
+├── requirements.txt             # Залежності проєкту (django, pillow, python-dotenv тощо)
+├── db.sqlite3                   # Локальна база даних (створиться автоматично)
+├── manage.py                    # Головний скрипт керування Django
 │
-├── task_manager_service/      # Головна директорія налаштувань (Configuration Root)
+├── task_manager_service/        # Головна директорія налаштувань (Configuration Root)
 │   ├── __init__.py
 │   ├── asgi.py
-│   ├── settings.py          # Усі налаштування проєкту
-│   ├── urls.py              # Головний маршрутизатор (включає urls додатків)
+│   ├── settings.py              # Усі налаштування проєкту
+│   ├── urls.py                  # Головний маршрутизатор (включає urls додатків)
 │   └── wsgi.py
 │
-├── task_manager/            # Основний додаток для логіки таск-менеджеру
-│   ├── migrations/          # Міграції бази даних
+├── task_manager/                # Основний додаток для логіки таск-менеджеру
+│   ├── migrations/              # Міграції бази даних
 │   ├── __init__.py
-│   ├── admin.py             # Налаштування адмін-панелі Django
+│   ├── admin.py                 # Налаштування адмін-панелі Django
 │   ├── apps.py
-│   ├── forms.py             # Форми для створення/редагування завдань та фільтрації
-│   ├── models.py            # Моделі (Worker, Position, Task, Tag)
-│   ├── tests.py             # Тести для перевірки логіки
-│   ├── urls.py              # Маршрути для сторінок таск-менеджеру
-│   └── views.py             # Контролери/Представлення (Class-Based Views)
+│   ├── forms.py                 # Форми для створення/редагування завдань та фільтрації
+│   ├── models.py                # Моделі (Worker, Position, Task, Tag)
+│   ├── tests.py                 # Тести для перевірки логіки
+│   ├── urls.py                  # Маршрути для сторінок таск-менеджеру
+│   └── views.py                 # Контролери/Представлення (Class-Based Views)
 │
-├── templates/               # Глобальні HTML-шаблони
-│   ├── base.html            # Головний каркас сайту (навігація, футер, підключення стилів)
+├── templates/                   # Глобальні HTML-шаблони
+│   ├── base.html                # Головний каркас сайту (навігація, футер, підключення стилів)
 │   └── includes/
-│       └── pagination.html  # Шаблон для пагінації списків
+│   │   └── pagination.html      # Шаблон для пагінації списків
+│   └── registation/
+│   │   └── register.html        # Шаблон для регістрації працівників
+│   │   └── login.html           # Шаблон для входу працівника в систему
+│   └── task_manager/
+│   │   └── index.html           # Главная страница (Dashboard)
+│   │   └── my_task_list.html    # Кабінет працівника в системі
+│   │   └── project_details.html # Опис поточного проекту
+│   │   └── project_list.html    # Проекти поточного працівника
+│   │   └── task_detail.html     # Опис поточного завдання
+│   │   └── task_form.html       # Шаблон форми для створення завдання
+│   │   └── task_list.html       # Завдання для поточного працівника
 │
-└── static/                  # Статичні файли (CSS, JS, зображення)
+└── static/                      # Статичні файли (CSS, JS, зображення)
     ├── css/
-    │   └── styles.css       # Ваші кастомні стилі
-    ├── js/
-    └── images/              # Папка для картинок (наприклад, іконки або логотип)
+    │   └── styles.css           # Ваші кастомні стилі
 ```
