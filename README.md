@@ -70,6 +70,7 @@ it_task_manager/
 The following steps were taken:
 
 - The Render service deploys the project to the server
+- Postgresql database support
 - a test user was added so that visitors to my site could also explore the functionality:
   - user: serg_braun
   - password: A7k9M2xQ
