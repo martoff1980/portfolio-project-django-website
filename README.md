@@ -64,3 +64,12 @@ it_task_manager/
     ├── css/
     │   └── styles.css           # Ваші кастомні стилі
 ```
+
+# Deploying my project
+
+The following steps were taken:
+
+- The Render service deploys the project to the server
+- a test user was added so that visitors to my site could also explore the functionality:
+  - user: serg_braun
+  - password: A7k9M2xQ

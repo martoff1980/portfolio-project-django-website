@@ -9,4 +9,5 @@ venv/
 db.sqlite3
 images/*
 !images/structure_db.png
+*.json
 plane.md
